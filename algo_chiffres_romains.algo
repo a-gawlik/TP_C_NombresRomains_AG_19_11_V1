@@ -1,0 +1,323 @@
+Algorithme: chiffres romains
+
+//Les chiffres romains vont de 1 à 3999.
+//l'utilisateur peut quitter le programme en tapant 0.
+//programme 1 - conversion décimal vers romains
+//programme 2 - conversion romain vers décimal
+
+CONST 
+
+	TAILLE_MAX = 10 :ENTIER 
+
+
+	//PROCEDURE INITIALISATION :
+PROCEDURE initialisation(VAR chaine_car:CHAINE,VAR tableau_entier TABLEAU[0..TAILLE_MAX de ENTIER,VAR longueur:ENTIER, VAR resulat:ENTIER])
+
+VAR
+	nCpt : ENTIER
+DEBUT
+	nCpt=0
+	chaine_car=" "
+	longueur=0
+	resultat=0
+	POUR cpt DE 0 A TAILLE_MAX FAIRE
+		tableau_entier[cpt]=0
+	FINPOUR
+FINPROCEDURE
+
+
+	//Procedure MENU permettant de quitter le programme ou de choisir son sens de conversion
+PROCEDURE menu(VAR saisie:ENTIER) 
+
+DEBUT
+
+	ECRIRE "Veuillez entrer 1 pour convertir un nombre décimal en romain.
+	ECRIRE "Veuillez entrer 2 pour convertir un nombre romain en décimal.
+	ECRIRE "Veuillez entrer 0 pour quitter le programme.
+	TANT QUE (saisie<0) ET (saisie>2) 
+		ECRIRE "Saisie incorrecte, entrer un nouveau chiffre"
+		LIRE saisie
+	FINTANTQUE
+	
+FINPROCEDURE
+
+// --- CONVERSION ROMAIN VERS DECIMAL ---
+
+PROCEDURE saisie_chaine_car(VAR chaine_car:CHAINE)
+
+VAR
+	nCpt,nErreur,nLongueur : ENTIER
+
+DEBUT
+	
+		ECRIRE("Veuillez entrer votre chaine de caracteres")
+		LIRE chaine_car
+		nLongueur = longueur(chaine_car)
+		nErreur=0
+		POUR nCpt DE 0 A nLongueur FAIRE
+			SI chaine_car[cpt]='I' ET chaine_car[cpt]='V' ET chaine_car[cpt]='X' ET chaine_car[cpt]='L' ET chaine_car[cpt]='C' ET chaine_car[cpt]='D' ET chaine_car[cpt]='M' ALORS
+				ECRIRE "Saisie incorrecte"
+				nCpt=nLongueur
+				nErreur=1
+			FINSI
+		FINPOUR
+
+FINPROCEDURE
+
+
+//procedure de traduction des chiffres romains vers des entiers
+PROCEDURE traduction(VAR chaine_car:CHAINE, VAR tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIERS, VAR longueur : ENTIER)
+
+VAR
+	nCpt : ENTIER
+
+DEBUT
+
+	nCpt=0
+	TANT QUE chaine_car[nCpt]<>'\0' FAIRE
+		CASPARMI chaine_car[nCpt]
+			CAS 'I'
+				tableau_entier[nCpt]=1
+			CAS 'V'
+				tableau_entier[nCpt]=5
+			CAS 'X'
+				tableau_entier[nCpt]=10
+			CAS 'L'
+				tableau_entier[nCpt]=50
+			CAS 'C'
+				tableau_entier[nCpt]=100
+			CAS 'D'
+				tableau_entier[nCpt]=500
+			CAS 'M'
+				tableau_entier[nCpt]=1000
+		FINCASPAMI
+		nCpt=nCpt+1
+		longueur=nCpt
+	FINTANTQUE
+	
+FINPROCEDURE
+
+
+PROCEDURE verification_soustraction(VAR tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIERS, longueur:ENTIER)
+
+VAR
+	nCpt : ENTIER
+DEBUT
+	POUR nCpt DE 0 A longueur-1 FAIRE //nLongueur -1 sinon la dernière valeur du tableau est comparée à une donnée du tableau qui ne correspond pas
+		SI tableau_entier[nCpt]<tableau_entier[nCpt+1] ALORS
+			tableau_entier[nCpt]=tableau_entier[nCpt+1]-tableau_entier[nCpt]
+			tableau_entier[nCpt+1]=9999   //on réaffecte le nombre à une valeur>1000 pour qu'il ne puisse pas être pris en compte dans 2 soustractions.
+		FINSI
+	FINPOUR
+FINPROCEDURE
+
+
+PROCEDURE addition(VAR tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIER,VAR longueur : VAR ENTIER, resultat : ENTIER)
+
+VAR
+	nCpt :  ENTIER
+
+DEBUT
+	nCpt=0
+	POUR nCpt DE 0 A longueur FAIRE
+		SI tableau_entier[nCpt]<>9999
+			resultat=resultat+tableau_entier[nCpt]
+		FINSI
+	FINPOUR
+FINPROCEDURE
+
+
+// --- CONVERSION DECIMAL VERS ROMAIN ---
+
+
+//procedure de saisie et de vérSIication de l'entier.
+PROCEDURE saisie_entier(VAR nEntier : ENTIER)
+
+DEBUT
+	ECRIRE "Veuillez entrer un entier compris entre 1 et 3999"
+	LIRE nEntier
+	TANT QUE (nEntier<1) OU (nEntier>3999) 
+		ECRIRE "Saisie incorrecte, veuillez entrer un nombre compris entre 1 et 3999"
+		LIRE nEntier
+	FINTANTQUE
+FINPROCEDURE
+
+
+//procedure de décomposition d'un entier vers un tableau d'entier
+PROCEDURE decomposition_entier(nEntier : ENTIER,VAR tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIER, VAR nDecimal : ENTIER)
+
+VAR
+	nDecimal_local : ENTIER
+	nY : ENTIER
+	nX : REEL
+
+DEBUT
+	SI (nEntier>=1000) //vérification du nombre de décimales
+        nDecimal_local=4
+        nDecimal=4
+    SINON 
+    	SI (nEntier>=100)
+       		nDecimal_local=3
+        	nDecimal=3
+		SINON 
+			SI (nEntier>=10)
+        		nDecimal_local=2
+        		nDecimal=2
+    		SINON
+        		nDecimal_local=1
+        		nDecimal=1
+    		FINSI
+    	FINSI
+    FINSI
+
+    TANT QUE (nDecimal>0)
+        SI (nDecimal=4)
+            nX=nEntier DIV 1000
+            nY=nEntier-(nX*1000)
+            tableau_entier[0]=nX
+            nEntier=nY
+            nDecimal=nDecimal-1
+        SINON 
+        	SI (nDecimal=3)
+            	nX=nEntier DIV 100
+            	nY=nEntier-(nX*100)
+            	tableau_entier[1]=nX
+            	nEntier=nY
+            	nDecimal=nDecimal-1
+       		SINON 
+       			SI (nDecimal=2)
+            		nX=nEntier DIV 10
+            		nY=nEntier-(nX*10)
+            		tableau_entier[2]=nX
+            		nEntier=nY
+            		nDecimal=nDecimal-1
+        		SINON
+            		tableau_entier[3]=nEntier
+            		nEntier=0
+            		nDecimal=nDecimal-1
+            	FINI
+            FINSI
+        FINSI
+    FINTANTQUE
+
+
+//Procedure de création de la chaine de caractere.
+
+PROCEDURE creation_chaine_caractere(tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIER, VAR chaine_car:CHAINE)
+
+DEBUT
+
+    CASPARMI tableau_entier[0]
+        CAS 0:
+            chaine_car=' '
+        CAS 1:
+            chaine_car='M'
+        CAS 2:
+            chaine_car="MM"
+        CAS 3:
+            chaine_car="MMM"*
+    FINCASPARMI
+
+    CASPARMI tableau_entier[1]
+  
+        CAS 1:
+            chaine_car=chaine_car+"C"
+        CAS 2:
+            chaine_car=chaine_car+"CC"
+        CAS 3:
+            chaine_car=chaine_car+"CCC"
+        CAS 4:
+            chaine_car=chaine_car+"CD"
+        CAS 5:
+            chaine_car=chaine_car+"D"
+        CAS 6:
+            chaine_car=chaine_car+"DC"
+        CAS 7:
+            chaine_car=chaine_car+"DCC"
+        CAS 8:
+            chaine_car=chaine_car+"DCCC"
+        CAS 9:
+            chaine_car=chaine_car+"CM"
+    FINCASPARMI
+
+    CASPARMI tableau_entier[2]
+  
+        CAS 1:
+            chaine_car=chaine_car+"X"
+        CAS 2:
+            chaine_car=chaine_car+"XX"
+        CAS 3:
+            chaine_car=chaine_car+"XXX"
+        CAS 4:
+            chaine_car=chaine_car+"XL"
+        CAS 5:
+            chaine_car=chaine_car+"L"
+        CAS 6:
+            chaine_car=chaine_car+"LX"
+        CAS 7:
+            chaine_car=chaine_car+"LXX"
+        CAS 8:
+            chaine_car=chaine_car+"LXXX"
+        CAS 9:
+            chaine_car=chaine_car+"XC"
+    FINCASPARMI
+
+    CASPARMI tableau_entier[3]
+  
+        CAS 1:
+            chaine_car=chaine_car+"I"
+        CAS 2:
+            chaine_car=chaine_car+"II"
+        CAS 3:
+            chaine_car=chaine_car+"III"
+        CAS 4:
+            chaine_car=chaine_car+"IV"
+        CAS 5:
+            chaine_car=chaine_car+"V"
+        CAS 6:
+            chaine_car=chaine_car+"VI"
+        CAS 7:
+            chaine_car=chaine_car+"VII"
+        CAS 8:
+            chaine_car=chaine_car+"VIII"
+        CAS 9:
+            chaine_car=chaine_car+"IX"
+    FINCASPARMI
+
+FINPROCEDURE
+
+
+
+
+
+// --- PROGRAMME PRINCIPAL ---
+
+VAR
+
+	nSaisie,nLongueur,nResultat,nEntier,nDecimal : ENTIER
+	chaine_car : CHAINE
+	tableau_entier TABLEAU[0..TAILLE_MAX] de ENTIER
+
+DEBUT
+
+	nSaisie=3
+    TANT QUE (nSaisie<>0)
+        menu(nSaisie)
+        SI (nSaisie=1)
+            initialisation(chaine_car,tableau_entier,nLongueur,nResultat)
+            saisie_entier(nEntier)
+            decomposition_entier(nEntier,tableau_entier,Decimal)
+            creation_chaine_caractere(tableau_entier,chaine_car,Decimal)
+            ECRIRE "Votre entier",nEntier," est egal à ",chaine_car,"en romain"
+        FINSI
+        SI (nSaisie=2)
+            initialisation(chaine_car,tableau_entier,nLongueur,nResultat)
+            saisie_chaine_car(chaine_car)
+            traduction(chaine_car,tableau_entier,nLongueur)
+            verification_soustraction(tableau_entier,nLongueur)
+            addition(tableau_entier,nLongueur,nResultat)
+            ECRIRE chaine_car," = ",nResultat
+        FINSI
+    FINTANTQUE
+
+FIN.
